@@ -429,6 +429,28 @@ if (isset($_POST['new_folder']) && !empty($_POST['new_folder'])) {
     }
 }
 
+// Fungsi Cari File (Recursive)
+function searchFiles($dir, $keyword) {
+    $results = [];
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST
+    );
+
+    foreach ($iterator as $item) {
+        if (strpos(strtolower($item->getFilename()), strtolower($keyword)) !== false) {
+            $results[] = $item->getPathname();
+        }
+    }
+    return $results;
+}
+
+// Logika Eksekusi Pencarian
+$search_results = [];
+if (isset($_GET['search']) && !empty($_GET['search'])) {
+    $search_results = searchFiles($dir, $_GET['search']);
+}
+
 // 5. Buat File Baru
 if (isset($_POST['new_file']) && !empty($_POST['new_file'])) {
     $new_file_path = $dir . DIRECTORY_SEPARATOR . basename($_POST['new_file']);
@@ -632,6 +654,30 @@ sort($files);
             <button type="submit" class="btn btn-gray">Cari</button>
         </form>
     </div>
+    
+<!-- Form Pencarian -->
+<form method="GET" style="margin:20px 0;">
+    <input type="hidden" name="dir" value="<?= htmlspecialchars($dir) ?>">
+    <input type="text" name="search" placeholder="Cari file (misal: php, css)..." value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+    <button type="submit" class="btn">Cari</button>
+    <?php if(isset($_GET['search'])): ?><a href="?dir=<?= urlencode($dir) ?>" class="btn">Reset</a><?php endif; ?>
+</form>
+
+<?php if (!empty($search_results)): ?>
+    <div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #38bdf8;">
+        <h4>Hasil Pencarian untuk: "<?= htmlspecialchars($_GET['search']) ?>"</h4>
+        <ul>
+            <?php foreach ($search_results as $path): ?>
+                <li>
+                    <span style="color:#94a3b8; font-size:15px;"><?= htmlspecialchars($path) ?></span>
+                    <a href="?dir=<?= urlencode(dirname($path)) ?>&edit=<?= urlencode(basename($path)) ?>" style="color:#38bdf8; margin-left:10px;">[Edit]</a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php elseif(isset($_GET['search'])): ?>
+    <p>Tidak ditemukan file yang cocok.</p>
+<?php endif; ?>
 
     <!-- TABEL DAFTAR BERKAS (FOLDER DI ATAS, FILE DI BAWAH) -->
     <table>
