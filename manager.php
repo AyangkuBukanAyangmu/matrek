@@ -1,19 +1,8 @@
 <?php
-// ==========================================
-// KONFIGURASI KEAMANAN
-// ==========================================
-
-// Password default: admin123
 $password_hash = '$2a$12$QLh7xqC2/49495gjTzGumeqQ12HatXJrvxnntoUW2kmFrUfCxVWdK';
 
-// ==========================================
-// KONFIGURASI TAMPILAN
-// ==========================================
-
-// URL gambar dari Blogger
 $background_url = 'https://i.pinimg.com/originals/2e/bd/06/2ebd06b4dde55598cff5b33550511c78.gif';
 
-// Nama/judul login
 $login_title = 'Secure File Manager';
 $login_subtitle = 'Masukkan password untuk melanjutkan';
 
@@ -36,6 +25,12 @@ if (isset($_GET['logout'])) {
     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 }
+
+// Definisikan folder tempat file ini berada sebagai Home
+if (!isset($_SESSION['base_dir'])) {
+    $_SESSION['base_dir'] = realpath('.');
+}
+$base_dir = $_SESSION['base_dir'];
 
 // Cek Sesi Autentikasi
 if (!isset($_SESSION['fm_auth']) || $_SESSION['fm_auth'] !== true) {
@@ -570,7 +565,9 @@ sort($files);
     </div>
 
     <!-- BREADCRUMB DIREKTORI KLIKABLE -->
-    <div class="breadcrumb">
+   <div class="breadcrumb" style="background:#1e293b; padding:15px; border-radius:8px; margin-bottom:20px;">
+    <!-- Tombol Home -->
+    <a href="?dir=<?= urlencode($base_dir) ?>" class="btn" style="background:#0284c7; margin-right:10px;">🏠 Home</a>
         <strong>Direktori: </strong>
         <?php
         $path_parts = explode(DIRECTORY_SEPARATOR, $dir);
