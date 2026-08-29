@@ -1,6 +1,5 @@
 <?php
 $password_hash = '$2a$12$QLh7xqC2/49495gjTzGumeqQ12HatXJrvxnntoUW2kmFrUfCxVWdK';
-$background_url = 'https://i.pinimg.com/originals/2e/bd/06/2ebd06b4dde55598cff5b33550511c78.gif';
 $login_title = 'This Page Does Not Exist';
 $login_subtitle = "Sorry, the page you are looking for could not be found. It's just an accident that was not intentional.";
 
