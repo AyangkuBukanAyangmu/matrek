@@ -72,15 +72,29 @@ if (isset($_POST['new_file']) && !empty($_POST['new_file'])) {
     } else { $msg = "File sudah ada."; $msg_type = 'error'; }
 }
 
-// Rename
+// Rename (Dengan Fitur Timpa / Overwrite jika file sudah ada)
 if (isset($_POST['old_name']) && isset($_POST['new_name'])) {
     $old_p = $dir . DIRECTORY_SEPARATOR . basename($_POST['old_name']);
     $new_p = $dir . DIRECTORY_SEPARATOR . basename($_POST['new_name']);
-    if (file_exists($old_p) && !file_exists($new_p)) {
+    
+    if (file_exists($old_p)) {
+        // Jika file tujuan sudah ada, timpa (hapus dulu file tujuannya)
+        if (file_exists($new_p)) {
+            if (is_file($new_p)) {
+                @unlink($new_p);
+            } elseif (is_dir($new_p)) {
+                @rmdir($new_p);
+            }
+        }
+        
         if (rename($old_p, $new_p)) {
-            $msg = "Nama berhasil diubah."; $msg_type = 'success';
-        } else { $msg = "Gagal mengubah nama."; $msg_type = 'error'; }
-    } else { $msg = "Gagal: Nama sudah ada atau file asal tidak ada."; $msg_type = 'error'; }
+            $msg = "Nama berhasil diubah dan ditimpa."; $msg_type = 'success';
+        } else { 
+            $msg = "Gagal mengubah nama."; $msg_type = 'error'; 
+        }
+    } else { 
+        $msg = "Gagal: File asal tidak ada."; $msg_type = 'error'; 
+    }
 }
 
 // Hapus Item (Single)
